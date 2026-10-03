@@ -34,6 +34,25 @@ GitHub -> Actions -> **RustAgility Windows** -> Run workflow. Leva cerca de
 Sem certificado de assinatura de codigo o Windows mostra o aviso do
 SmartScreen ("Mais informacoes" -> "Executar assim mesmo").
 
+## Gerar o instalador no proprio Windows (sem GitHub Actions)
+
+`agility/build-windows.ps1` replica o workflow numa maquina Windows 10/11
+x64. Em PowerShell **como Administrador**:
+
+    Set-ExecutionPolicy -Scope Process Bypass -Force
+    .\build-windows.ps1            # .exe em C:\ra\out
+    .\build-windows.ps1 -Msi       # tambem tenta o .msi
+
+- Instala o que faltar via winget: Git, Python, Rust, LLVM 15.0.6 e Visual
+  Studio 2022 Build Tools (C++). Liga o Modo de Desenvolvedor (o Flutter
+  exige para plugins) e caminhos longos.
+- Primeira vez: varias horas (o vcpkg compila ffmpeg etc.) e ~40 GB em
+  `C:\ra`. Rodadas seguintes reaproveitam tudo.
+- Log completo em `C:\ra\build.log`.
+- O bridge Flutter<->Rust ja vem pronto em `agility/bridge/` (gerado no
+  Linux com Flutter 3.22.3 + flutter_rust_bridge_codegen 1.80.1, igual ao
+  bridge.yml). Se `src/flutter_ffi.rs` mudar numa atualizacao, regerar.
+
 ## Trocar logo, servidor ou Key
 
 - Logo: substituir `agility/logo-source.png` (PNG quadrado 1024x1024,
